@@ -1,23 +1,16 @@
-process.env.UV_THREADPOOL_SIZE = 1
-const { isMaster, fork } = require('cluster')
+const express = require('express')
+const { pbkdf2 } = require('crypto')
 
-if (isMaster) {
-  fork()
-} else {
-  const express = require('express')
-  const { pbkdf2 } = require('crypto')
+const app = express()
 
-  const app = express()
-
-  app.get('/', (req, res) => {
-    pbkdf2('a', 'b', 100000, 512, 'sha512', () => {
-      res.send('Hi there')    
-    })
+app.get('/', (req, res) => {
+  pbkdf2('a', 'b', 100000, 512, 'sha512', () => {
+    res.send('Hi there')    
   })
+})
 
-  app.get('/fast', (req, res) => {
-    res.send('This was fast!')
-  })
+app.get('/fast', (req, res) => {
+  res.send('This was fast!')
+})
 
-  app.listen(3000)
-}
+app.listen(3000)
